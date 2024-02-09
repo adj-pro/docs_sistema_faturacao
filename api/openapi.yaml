@@ -1,0 +1,1888 @@
+openapi: 3.0.3
+info:
+  title: Back-end Sistema de facturacao Docs 1.0.0
+  description: Esta e a documentacao oficial do back end do sistema de facturacao.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: eduardopembeleafonso@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+- url: https://petstore3.swagger.io/api/v3
+tags:
+- name: User
+  description: Descrição de todas operaçoes e rotas das funcionalidade de um usuario.
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
+- name: Company
+  description: Descrição de todas operaçoes e rotas de empresas(company).
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
+- name: Category
+  description: Descrição de todas operaçoes e rotas das categorias.
+  externalDocs:
+    description: Find out more about our store
+    url: http://swagger.io
+- name: Brand
+  description: Descrição de todas operaçoes e rotas das marcas de produtos.
+- name: Product
+  description: Descrição de todas operaçoes e rotas dos produtos.
+- name: Client
+  description: Descrição de todas operaçoes e rotas dos clientes.
+paths:
+  /auth:
+    post:
+      tags:
+      - User
+      summary: Rota para autenticao de usuarios
+      description: Faz a autenticao de usuarios usando o email e a senha
+      operationId: addPet
+      requestBody:
+        description: Faz a autenticao de usuarios usando o seu email e a sua senha
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAuth'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/UserAuth'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserAuth'
+        required: true
+      responses:
+        "200":
+          description: Autenticacao bem sucedida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        "401":
+          description: Email ou senha incorretas
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: User
+  /register:
+    post:
+      tags:
+      - User
+      summary: Rota para registro de usuarios
+      description: Faz o regsitro de novos usuarios
+      operationId: registerUser
+      requestBody:
+        description: "Faz a autenticao de usuarios usando o seu o email, nome, phone,\
+          \ pin code e a senha"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+        required: true
+      responses:
+        "201":
+          description: Registro bem sucedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Erro geral de registro
+        "401":
+          description: Ja existe uma conta com esse e-mail
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: User
+  /company:
+    post:
+      tags:
+      - Company
+      summary: Rota para registro dos dados da Empresa(company)
+      description: Faz o registro da empresa
+      operationId: registerCompany
+      requestBody:
+        description: "Faz o registro de uma empresa usando o seu nome e o tipo de\
+          \ empresa ou negocio, telefone e o nif - precisas de um token gerado no\
+          \ registro ou autenticacao."
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Company'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Company'
+        required: true
+      responses:
+        "201":
+          description: Registro bem sucedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+        "400":
+          description: Erro geral de registro
+        "401":
+          description: Ja existe um produto com o mesmo nome.
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Company
+  /company/{id}:
+    put:
+      tags:
+      - Company
+      summary: Rota para editar os dados da empresa
+      description: "Faz a edicao dos dados da empresa, precisa substituir o id pelo\
+        \ id da empresa a ser editada e precisa de um token gerado na autenticacao\
+        \ ou registro"
+      operationId: editCompany
+      parameters:
+      - name: id
+        in: path
+        description: ID da empresa a ser editada
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Para editar os dados da empresa e preciso preencher os campos
+          abaixos
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Company'
+        required: true
+      responses:
+        "200":
+          description: Empresa editada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+        "400":
+          description: Erro geral de edicao
+        "404":
+          description: Empresa nao encontrada
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Company
+  /company (return info about my company):
+    get:
+      tags:
+      - Company
+      summary: Retorna os dados da minha empresa
+      description: Retorna os dados da minha empresa - precisas de um token
+      operationId: getAllCompany
+      responses:
+        "200":
+          description: Operacao feita com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+      security:
+      - api_key: []
+      x-swagger-router-controller: Company
+  /category:
+    post:
+      tags:
+      - Category
+      summary: Rota para registro de categorias
+      description: Faz o registro de novas categorias
+      operationId: registerCategory
+      requestBody:
+        description: Faz o registro de categorias usando o seu nome.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      responses:
+        "201":
+          description: Registro bem sucedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+        "400":
+          description: Erro geral de registro
+        "401":
+          description: Ja existe uma categoria com o mesmo nome.
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Category
+  /category/{id}:
+    put:
+      tags:
+      - Category
+      summary: Rota para editar dados da categoria
+      description: "Faz a edicao dos dados das categorias, precisa substituir o id\
+        \ pelo id da categoria a ser editada e precisa de um token gerado na autenticacao\
+        \ ou registro"
+      operationId: editCategory
+      parameters:
+      - name: id
+        in: path
+        description: ID da categoria a ser editada
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: Para editar a categoria e preciso preencher os campos abaixos
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      responses:
+        "200":
+          description: Categoria editada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+        "400":
+          description: Erro geral de edicao de categoria
+        "404":
+          description: Categoria nao encontrada
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Category
+  /category (return all categorys):
+    get:
+      tags:
+      - Category
+      summary: Retorna todas as categorias
+      description: Retorna uma lista de todas as categorias registradas - precisas
+        de um token
+      operationId: getAllCategorys
+      responses:
+        "200":
+          description: Operacao feita com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllCategory'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AllCategory'
+      security:
+      - api_key: []
+      x-swagger-router-controller: Category
+  /category/{id} (view one category):
+    get:
+      tags:
+      - Category
+      summary: Rota para pegar ou ver os dados de apenas uma categoria
+      description: "Essa rota retorna os dados de apenas uma categoria pelo seu id,\
+        \ precisa substituir o id pelo id da categoria a ser visualizado e precisa\
+        \ de um token gerado na autenticacao ou registro"
+      operationId: viewCategory
+      parameters:
+      - name: id
+        in: path
+        description: ID da categoria a ser visualizada
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Operacao bem sucedida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+        "400":
+          description: Erro geral de visualizacao de categorias
+        "404":
+          description: Categoria nao encontrada
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Category
+  /category/{id} (delete one category):
+    delete:
+      tags:
+      - Category
+      summary: Rota para apagar uma categoria
+      description: "Essa rota apaga uma categoria pelo seu id, precisa substituir\
+        \ o id pelo id da categoria a ser apagada e precisa de um token gerado na\
+        \ autenticacao ou registro"
+      operationId: deleteCategory
+      parameters:
+      - name: id
+        in: path
+        description: ID da categoria a ser apagada
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Operacao bem sucedida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryDeleteResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CategoryDeleteResponse'
+        "400":
+          description: Erro geral de categorias
+        "404":
+          description: Categoria nao encontrada
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Category
+  /brand:
+    post:
+      tags:
+      - Brand
+      summary: Rota para registro de marcas(brand)
+      description: Faz o registro de novas marcas
+      operationId: registerBrand
+      requestBody:
+        description: Faz o registro de marcas usando o seu nome.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Brand'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Brand'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Brand'
+        required: true
+      responses:
+        "201":
+          description: Registro bem sucedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BrandResponse'
+        "400":
+          description: Erro geral de registro
+        "401":
+          description: Ja existe uma marca com o mesmo nome.
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Brand
+  /brand/{id}:
+    put:
+      tags:
+      - Brand
+      summary: Rota para editar dados da marca
+      description: "Faz a edicao dos dados das marcas, precisa substituir o id pelo\
+        \ id da marca a ser editada e precisa de um token gerado na autenticacao ou\
+        \ registro"
+      operationId: editBrand
+      parameters:
+      - name: id
+        in: path
+        description: ID da marca a ser editada
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Para editar a marca e preciso preencher os campos abaixos
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Brand'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Brand'
+        required: true
+      responses:
+        "200":
+          description: Marca editada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BrandResponse'
+        "400":
+          description: Erro geral de edicao de marca
+        "404":
+          description: Marca nao encontrada
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Brand
+  /brand (return all brand):
+    get:
+      tags:
+      - Brand
+      summary: Retorna todas as marcas
+      description: Retorna uma lista de todas as marcas registradas - precisas de
+        um token
+      operationId: getAllBrand
+      responses:
+        "200":
+          description: Operacao feita com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllBrand'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AllBrand'
+      security:
+      - api_key: []
+      x-swagger-router-controller: Brand
+  /brand/{id} (view one brand):
+    get:
+      tags:
+      - Brand
+      summary: Rota para pegar ou ver os dados de apenas uma marca
+      description: "Essa rota retorna os dados de apenas uma marca pelo seu id, precisa\
+        \ substituir o id pelo id da marca a ser visualizada e precisa de um token\
+        \ gerado na autenticacao ou registro"
+      operationId: viewBrand
+      parameters:
+      - name: id
+        in: path
+        description: ID da marca a ser visualizada
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Operacao bem sucedida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BrandResponse'
+        "400":
+          description: Erro geral de visualizacao de categorias
+        "404":
+          description: Marca nao encontrada
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Brand
+  /brand/{id} (delete one brand):
+    delete:
+      tags:
+      - Brand
+      summary: Rota para apagar uma marca
+      description: "Essa rota apaga uma marca pelo seu id, precisa substituir o id\
+        \ pelo id da marca a ser apagada e precisa de um token gerado na autenticacao\
+        \ ou registro"
+      operationId: deleteBrand
+      parameters:
+      - name: id
+        in: path
+        description: ID da marca a ser apagada
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Operacao bem sucedida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandDeleteResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BrandDeleteResponse'
+        "400":
+          description: Erro geral
+        "404":
+          description: Marca nao encontrada
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Brand
+  /product:
+    post:
+      tags:
+      - Product
+      summary: Rota para registro de produtos(product)
+      description: Faz o registro de novos produtos
+      operationId: registerProduct
+      requestBody:
+        description: "Faz o registro de produtos usando o seu nome, categoria, marca,\
+          \ quantidade, preco do fornecedor, preco de venda, referencia, descricao\
+          \ e imagem."
+        content:
+          application/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+        required: true
+      responses:
+        "201":
+          description: Registro bem sucedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        "400":
+          description: Erro geral de registro
+        "401":
+          description: Ja existe um produto com o mesmo nome.
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Product
+  /product/{id}:
+    put:
+      tags:
+      - Product
+      summary: Rota para editar dados do produto
+      description: "Faz a edicao dos dados dos produtos, precisa substituir o id pelo\
+        \ id do produto a ser editado e precisa de um token gerado na autenticacao\
+        \ ou registro"
+      operationId: editProduct
+      parameters:
+      - name: id
+        in: path
+        description: ID do produto a ser editado
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Para editar o produto e preciso preencher os campos abaixos
+        content:
+          application/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Product'
+        required: true
+      responses:
+        "200":
+          description: Produto editado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        "400":
+          description: Erro geral de edicao
+        "404":
+          description: Produto nao encontrado
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Product
+  /product (return all product):
+    get:
+      tags:
+      - Product
+      summary: Retorna todos os produtos
+      description: Retorna uma lista de todos os produtos registrados - precisas de
+        um token
+      operationId: getAllProduct
+      responses:
+        "200":
+          description: Operacao feita com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllProduct'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AllProduct'
+      security:
+      - api_key: []
+      x-swagger-router-controller: Product
+  /product/{id} (view one product):
+    get:
+      tags:
+      - Product
+      summary: Rota para pegar ou ver os dados de apenas um produto
+      description: "Essa rota retorna os dados de apenas um produto pelo seu id, precisa\
+        \ substituir o id pelo id do produto a ser visualizado e precisa de um token\
+        \ gerado na autenticacao ou registro"
+      operationId: viewProduct
+      parameters:
+      - name: id
+        in: path
+        description: ID do produto a ser visualizado
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Operacao bem sucedida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        "400":
+          description: Erro geral de visualizacao de categorias
+        "404":
+          description: Marca nao encontrada
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Product
+  /product/{id} (delete one product):
+    delete:
+      tags:
+      - Product
+      summary: Rota para apagar um produto
+      description: "Essa rota apaga um produto pelo seu id, precisa substituir o id\
+        \ pelo id do produto a ser apagado e precisa de um token gerado na autenticacao\
+        \ ou registro"
+      operationId: deleteProduct
+      parameters:
+      - name: id
+        in: path
+        description: ID do produto a ser apagado
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Operacao bem sucedida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDeleteResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ProductDeleteResponse'
+        "400":
+          description: Erro geral
+        "404":
+          description: Produto nao encontrada
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Product
+  /product-more-purchased (return all product more purchased):
+    get:
+      tags:
+      - Product
+      summary: Retorna uma lista dos 5 produtos mais comprados
+      description: Retorna uma lista dos 5 produtos mais comprados - precisas de um
+        token
+      operationId: getAllProductMorePurchased
+      responses:
+        "200":
+          description: Operacao feita com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllProductMorePurchased'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AllProductMorePurchased'
+      security:
+      - api_key: []
+      x-swagger-router-controller: Product
+  /product-with-low-stock (return all product with low stock):
+    get:
+      tags:
+      - Product
+      summary: Retorna uma lista dos produtos com estoque baixo
+      description: Retorna uma lista dos produtos com estoque baixo - precisas de
+        um token
+      operationId: getAllProductLowStock
+      responses:
+        "200":
+          description: Operacao feita com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllProductLowStock'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AllProductLowStock'
+      security:
+      - api_key: []
+      x-swagger-router-controller: Product
+  /out-of-stock-product (return all out-of-stock products):
+    get:
+      tags:
+      - Product
+      summary: Retorna uma lista dos produtos com estoque em falta
+      description: Retorna uma lista dos produtos com estoque em falta - precisas
+        de um token
+      operationId: getAllProductOutStock
+      responses:
+        "200":
+          description: Operacao feita com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllProductOutStock'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AllProductOutStock'
+      security:
+      - api_key: []
+      x-swagger-router-controller: Product
+  /client:
+    post:
+      tags:
+      - Client
+      summary: Rota para registro de clientes
+      description: Faz o registro de novos clientes
+      operationId: registerClient
+      requestBody:
+        description: "Faz o registro de clientes usando o seu nome, email, telefone\
+          \ e o endereco."
+        content:
+          application/form-data:
+            schema:
+              $ref: '#/components/schemas/Client'
+        required: true
+      responses:
+        "201":
+          description: Registro bem sucedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        "400":
+          description: Erro geral de registro
+        "401":
+          description: Ja existe um cliente com o mesmo email.
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Client
+  /client/{id}:
+    put:
+      tags:
+      - Client
+      summary: Rota para editar dados do cliente
+      description: "Faz a edicao dos dados dos clientes, precisa substituir o id pelo\
+        \ id do cliente a ser editado e precisa de um token gerado na autenticacao\
+        \ ou registro"
+      operationId: editClient
+      parameters:
+      - name: id
+        in: path
+        description: ID do cliente a ser editado
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Para editar o cliente e preciso preencher os campos abaixos
+        content:
+          application/form-data:
+            schema:
+              $ref: '#/components/schemas/Client'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Client'
+        required: true
+      responses:
+        "200":
+          description: Cliente editado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        "400":
+          description: Erro geral de edicao
+        "404":
+          description: Cliente nao encontrado
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Client
+  /client (return all clients):
+    get:
+      tags:
+      - Client
+      summary: Retorna todos os clientes
+      description: Retorna uma lista de todos os clientes registrados - precisas de
+        um token
+      operationId: getAllClient
+      responses:
+        "200":
+          description: Operacao feita com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllClient'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AllClient'
+      security:
+      - api_key: []
+      x-swagger-router-controller: Client
+  /client/{id} (view profile of the client):
+    get:
+      tags:
+      - Client
+      summary: Rota para pegar o perfil ou ver os dados de apenas um cliente
+      description: "Essa rota retorna os dados de apenas um cliente pelo seu id, precisa\
+        \ substituir o id pelo id do cliente a ser visualizado e precisa de um token\
+        \ gerado na autenticacao ou registro"
+      operationId: viewClient
+      parameters:
+      - name: id
+        in: path
+        description: ID do cliente a ser visualizado
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Operacao bem sucedida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+        "400":
+          description: Erro geral de visualizacao de clientes
+        "404":
+          description: Cliente nao encontrado
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Client
+  /client/{id} (delete one client):
+    delete:
+      tags:
+      - Client
+      summary: Rota para apagar um cliente
+      description: "Essa rota apaga um cliente pelo seu id, precisa substituir o id\
+        \ pelo id do cliente a ser apagado e precisa de um token gerado na autenticacao\
+        \ ou registro"
+      operationId: deleteClient
+      parameters:
+      - name: id
+        in: path
+        description: ID do cliente a ser apagado
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Operacao bem sucedida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDeleteResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ClientDeleteResponse'
+        "400":
+          description: Erro geral
+        "404":
+          description: Cliente nao encontrado
+      security:
+      - petstore_auth:
+        - write:pets
+        - read:pets
+      x-swagger-router-controller: Client
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Bebidas
+      xml:
+        name: category
+    CategoryResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: eyJhbGciOiJI
+        name:
+          type: string
+          example: Bebidas
+      example:
+        name: Bebidas
+        _id: eyJhbGciO1
+      xml:
+        name: category
+    CategoryDeleteResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Category successfully removed!
+      example:
+        message: Category successfully removed!
+      xml:
+        name: category
+    AllCategory:
+      type: object
+      properties:
+        category:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/CategoryResponse'
+      example:
+        category:
+        - name: Bebidas
+          _id: a1hdbb
+        - name: Cosmeticos
+          _id: akghdgb
+        - name: Roupas
+          _id: akghdgbgs
+      xml:
+        name: category
+    Brand:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Adidas
+      xml:
+        name: brand
+    BrandResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: eyJhbGciOiJI
+        name:
+          type: string
+          example: Adidas
+      example:
+        name: Adidas
+        _id: eyJhbGciO1
+      xml:
+        name: brand
+    BrandDeleteResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Brand successfully removed!
+      example:
+        message: Brand successfully removed!
+      xml:
+        name: brand
+    AllBrand:
+      type: object
+      properties:
+        brand:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/BrandResponse'
+      example:
+        brand:
+        - name: Nike
+          _id: a1hdbb
+        - name: Adidas
+          _id: akghdgb
+        - name: Gucci
+          _id: akghdgbgs
+      xml:
+        name: brand
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Tenis
+        category:
+          type: string
+          example: Desportivos
+        brand:
+          type: string
+          example: Adidas
+        quantity:
+          type: number
+          example: 50
+        price_f:
+          type: string
+          example: "15,000"
+        price:
+          type: string
+          example: "20,000"
+        reference:
+          type: string
+          example: referencia_do_produto
+        description:
+          type: string
+          example: Optimo tenis.
+        image:
+          type: string
+          example: tenis_adidas.png
+      xml:
+        name: product
+    ProductResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: eyJhbGciOiJI
+        name:
+          type: string
+          example: Tenis
+        category:
+          type: string
+          example: Desportivos
+        brand:
+          type: string
+          example: Adidas
+        quantity:
+          type: number
+          example: 50
+        price_f:
+          type: string
+          example: "15,000"
+        price:
+          type: string
+          example: "20,000"
+        reference:
+          type: string
+          example: referencia_do_produto
+        description:
+          type: string
+          example: Optimo tenis.
+        image:
+          type: string
+          example: tenis_adidas.png
+      example:
+        name: Tenis
+        category: Desportivos
+        brand: Adidas
+        quantity: 50
+        price_f: "15,000"
+        price: "20,000"
+        reference: referencia_do_produto
+        description: Bom tenis
+        image: tenis_adidas.png
+        _id: eyJhbGciO1
+      xml:
+        name: product
+    ProductDeleteResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Product successfully removed!
+      example:
+        message: Product successfully removed!
+      xml:
+        name: product
+    AllProduct:
+      type: object
+      properties:
+        product:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ProductResponse'
+      example:
+        product:
+        - name: Tenis
+          category: Desportivos
+          brand: Adidas
+          quantity: 50
+          price_f: "15,000"
+          price: "20,000"
+          reference: referencia_do_produto
+          description: Bom tenis
+          image: tenis_adidas.png
+          _id: eyJhbGciO1
+        - name: Tenis
+          category: Desportivos
+          brand: Adidas
+          quantity: 50
+          price_f: "15,000"
+          price: "20,000"
+          reference: referencia_do_produto
+          description: Bom tenis
+          image: tenis_adidas.png
+          _id: eyJhbGciO1
+        - name: Tenis
+          category: Desportivos
+          brand: Adidas
+          quantity: 50
+          price_f: "15,000"
+          price: "20,000"
+          reference: referencia_do_produto
+          description: Bom tenis
+          image: tenis_adidas.png
+          _id: eyJhbGciO1
+      xml:
+        name: product
+    AllProductMorePurchased:
+      type: object
+      properties:
+        product:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ProductResponse'
+      example:
+        product:
+        - name: Tenis
+          purchase_number: 20
+          category: Desportivos
+          brand: Adidas
+          quantity: 50
+          price_f: "15,000"
+          price: "20,000"
+          reference: referencia_do_produto
+          description: Bom tenis
+          image: tenis_adidas.png
+          _id: eyJhbGciO1
+        - name: Tenis
+          purchase_number: 43
+          category: Desportivos
+          brand: Adidas
+          quantity: 50
+          price_f: "15,000"
+          price: "20,000"
+          reference: referencia_do_produto
+          description: Bom tenis
+          image: tenis_adidas.png
+          _id: eyJhbGciO1
+        - name: Tenis
+          purchase_number: 28
+          category: Desportivos
+          brand: Adidas
+          quantity: 50
+          price_f: "15,000"
+          price: "20,000"
+          reference: referencia_do_produto
+          description: Bom tenis
+          image: tenis_adidas.png
+          _id: eyJhbGciO1
+      xml:
+        name: product
+    AllProductLowStock:
+      type: object
+      properties:
+        product:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ProductResponse'
+      example:
+        product:
+        - name: Tenis
+          purchase_number: 20
+          category: Desportivos
+          brand: Adidas
+          quantity: 10
+          price_f: "15,000"
+          price: "20,000"
+          reference: referencia_do_produto
+          description: Bom tenis
+          image: tenis_adidas.png
+          _id: eyJhbGciO1
+        - name: Tenis
+          purchase_number: 43
+          category: Desportivos
+          brand: Adidas
+          quantity: 10
+          price_f: "15,000"
+          price: "20,000"
+          reference: referencia_do_produto
+          description: Bom tenis
+          image: tenis_adidas.png
+          _id: eyJhbGciO1
+        - name: Tenis
+          purchase_number: 28
+          category: Desportivos
+          brand: Adidas
+          quantity: 10
+          price_f: "15,000"
+          price: "20,000"
+          reference: referencia_do_produto
+          description: Bom tenis
+          image: tenis_adidas.png
+          _id: eyJhbGciO1
+      xml:
+        name: product
+    AllProductOutStock:
+      type: object
+      properties:
+        product:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ProductResponse'
+      example:
+        product:
+        - name: Tenis
+          purchase_number: 20
+          category: Desportivos
+          brand: Adidas
+          quantity: 0
+          price_f: "15,000"
+          price: "20,000"
+          reference: referencia_do_produto
+          description: Bom tenis
+          image: tenis_adidas.png
+          _id: eyJhbGciO1
+        - name: Tenis
+          purchase_number: 43
+          category: Desportivos
+          brand: Adidas
+          quantity: 0
+          price_f: "15,000"
+          price: "20,000"
+          reference: referencia_do_produto
+          description: Bom tenis
+          image: tenis_adidas.png
+          _id: eyJhbGciO1
+        - name: Tenis
+          purchase_number: 28
+          category: Desportivos
+          brand: Adidas
+          quantity: 0
+          price_f: "15,000"
+          price: "20,000"
+          reference: referencia_do_produto
+          description: Bom tenis
+          image: tenis_adidas.png
+          _id: eyJhbGciO1
+      xml:
+        name: product
+    Client:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Carlos Mateus
+        email:
+          type: string
+          example: carlos.mateus@gmail.com
+        phone:
+          type: number
+          example: 27847836
+        address:
+          type: string
+          example: "France, paris."
+      xml:
+        name: client
+    ClientResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: eyJhbGciOiJI
+        name:
+          type: string
+          example: Carlos Mateus
+        email:
+          type: string
+          example: carlos.mateus@gmail.com
+        phone:
+          type: number
+          example: 27847836
+        address:
+          type: string
+          example: "France, paris."
+      example:
+        name: Carlos Mateus
+        email: carlos.mateus@gmail.com
+        phone: 27847836
+        address: "France, paris."
+        _id: eyJhbGciO1
+      xml:
+        name: client
+    ClientDeleteResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Client successfully removed!
+      example:
+        message: Client successfully removed!
+      xml:
+        name: client
+    AllClient:
+      type: object
+      properties:
+        product:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ClientResponse'
+      example:
+        client:
+        - name: Carlos Mateus
+          email: carlos.mateus@gmail.com
+          phone: 27847836
+          address: "France, paris."
+          _id: eyJhbGciO1
+        - name: Carlos Mateus
+          email: carlos.mateus@gmail.com
+          phone: 27847836
+          address: "France, paris."
+          _id: eyJhbGciO1
+        - name: Carlos Mateus
+          email: carlos.mateus@gmail.com
+          phone: 27847836
+          address: "France, paris."
+          _id: eyJhbGciO1
+      xml:
+        name: client
+    UserAuth:
+      type: object
+      properties:
+        email:
+          type: string
+          example: edocha@gmail.com
+        password:
+          type: string
+          example: "12345678"
+      xml:
+        name: user
+    UserRegister:
+      type: object
+      properties:
+        email:
+          type: string
+          example: cariege01@email.com
+        password:
+          type: string
+          example: "12345678"
+        name:
+          type: string
+          example: Osvaldo Cariege
+      xml:
+        name: user
+    Company:
+      type: object
+      properties:
+        company_name:
+          type: string
+          example: Adj Fashion
+        company_type:
+          type: string
+          example: Loja de Roupa (Botique)
+        phone:
+          type: string
+          example: 936xxxxxxx
+        nif:
+          type: string
+          example: "50134542438"
+      xml:
+        name: product
+    CompanyResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: eyJhbGciOiJI
+        company_name:
+          type: string
+          example: Adj Fashion
+        company_type:
+          type: string
+          example: Loja de Roupa (Botique)
+        phone:
+          type: string
+          example: 936xxxxxxx
+        nif:
+          type: string
+          example: "50134542438"
+        user_id:
+          type: string
+          example: ghaBWhsja
+      example:
+        company_name: Adj Fashion
+        company_type: Loja de Roupa (Botique)
+        phone: 936xxxxxxx
+        nif: 50134542438
+        user_id: ghaBWhsja
+        _id: eyJhbGciO1
+      xml:
+        name: product
+    UserUpdate:
+      type: object
+      properties:
+        email:
+          type: string
+          example: eduardo01@email.com
+        birth_date:
+          type: string
+          example: 07/07/2001
+        name:
+          type: string
+          example: Edocha Afonso
+        image:
+          type: string
+          example: my_photo.png
+        address:
+          type: string
+          example: "Luanda, viana"
+        phone:
+          type: string
+          example: "936654821"
+        genre:
+          type: string
+          example: Masculino
+        province:
+          type: string
+          example: Luanda
+        country:
+          type: string
+          example: Angola
+        nif:
+          type: string
+          example: LA1234AOB2
+      xml:
+        name: user
+    UserUpdateResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        email:
+          type: string
+          example: eduardo01@email.com
+        birth_date:
+          type: string
+          example: 07/07/2001
+        name:
+          type: string
+          example: Edocha Afonso
+        image:
+          type: string
+          example: my_photo.png
+        address:
+          type: string
+          example: "Luanda, viana"
+        phone:
+          type: string
+          example: "936654821"
+        genre:
+          type: string
+          example: Masculino
+        province:
+          type: string
+          example: Luanda
+        country:
+          type: string
+          example: Angola
+        nif:
+          type: string
+          example: LA1234AOB2
+        pin_code:
+          type: string
+          example: "1234"
+        password:
+          type: string
+          example: "12345678"
+      example:
+        image: my_photo.png
+        country: Angola
+        address: "Luanda, viana"
+        birth_date: 07/07/2001
+        pin_code: "1234"
+        nif: LA1234AOB2
+        password: "12345678"
+        province: Luanda
+        phone: "936654821"
+        name: Edocha Afonso
+        genre: Masculino
+        id: 1
+        email: eduardo01@email.com
+      xml:
+        name: user
+    User:
+      type: object
+      properties:
+        _id:
+          type: integer
+          format: int64
+          example: 1
+        email:
+          type: string
+          example: eduardo01@email.com
+        password:
+          type: string
+          example: "12345678"
+        name:
+          type: string
+          example: Edocha Afonso
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+      example:
+        password: I1NiIsInR5cCI6Ik
+        name: Edocha Afonso
+        _id: eyJhbGciO1
+        email: eduardo01@email.com
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+      xml:
+        name: user
+    AllUsers:
+      type: object
+      properties:
+        users:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/UserUpdateResponse'
+      example:
+        users:
+        - image: my_photo.png
+          country: Angola
+          address: "Luanda, viana"
+          birth_date: 07/07/2001
+          pin_code: "1234"
+          nif: LA1234AOB2
+          password: "12345678"
+          province: Luanda
+          phone: "936654821"
+          name: Edocha Afonso
+          genre: Masculino
+          id: 1
+          email: eduardo01@email.com
+        - image: my_photo.png
+          country: Angola
+          address: "Luanda, viana"
+          birth_date: 07/07/2001
+          pin_code: "1234"
+          nif: LA1234AOB2
+          password: "12345678"
+          province: Luanda
+          phone: "936654821"
+          name: Edocha Afonso
+          genre: Masculino
+          id: 1
+          email: eduardo01@email.com
+      xml:
+        name: user
+    Jobs:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        title:
+          type: string
+          example: Preciso de um barbeiro
+        description:
+          type: string
+          example: Preciso de um barbeiro para cortar cabelo ao meu filho.
+        remuneration:
+          type: string
+          example: "2500"
+        image:
+          type: string
+          example: biskato_photo.png
+        address:
+          type: string
+          example: "Luanda, viana, grafanil"
+        requeriments:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/JobsRequeriments'
+        responsibility:
+          type: string
+          example: Cortar bem o cabelo
+      example:
+        image: biskato_photo.png
+        requeriments:
+        - item_3: Saber pintar o cabelo
+          item_2: Saber fazer laminagem
+          item_1: Saber cortar o cabelo
+        - item_3: Saber pintar o cabelo
+          item_2: Saber fazer laminagem
+          item_1: Saber cortar o cabelo
+        address: "Luanda, viana, grafanil"
+        responsibility: Cortar bem o cabelo
+        description: Preciso de um barbeiro para cortar cabelo ao meu filho.
+        id: 1
+        remuneration: "2500"
+        title: Preciso de um barbeiro
+      xml:
+        name: jobs
+    JobsUpdateResponse:
+      type: object
+      properties:
+        job:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/Jobs'
+      example:
+        job:
+        - image: biskato_photo.png
+          requeriments:
+          - item_3: Saber pintar o cabelo
+            item_2: Saber fazer laminagem
+            item_1: Saber cortar o cabelo
+          - item_3: Saber pintar o cabelo
+            item_2: Saber fazer laminagem
+            item_1: Saber cortar o cabelo
+          address: "Luanda, viana, grafanil"
+          responsibility: Cortar bem o cabelo
+          description: Preciso de um barbeiro para cortar cabelo ao meu filho.
+          id: 1
+          remuneration: "2500"
+          title: Preciso de um barbeiro
+        - image: biskato_photo.png
+          requeriments:
+          - item_3: Saber pintar o cabelo
+            item_2: Saber fazer laminagem
+            item_1: Saber cortar o cabelo
+          - item_3: Saber pintar o cabelo
+            item_2: Saber fazer laminagem
+            item_1: Saber cortar o cabelo
+          address: "Luanda, viana, grafanil"
+          responsibility: Cortar bem o cabelo
+          description: Preciso de um barbeiro para cortar cabelo ao meu filho.
+          id: 1
+          remuneration: "2500"
+          title: Preciso de um barbeiro
+      xml:
+        name: job
+    JobsRequeriments:
+      type: object
+      properties:
+        item_1:
+          type: string
+          example: Saber cortar o cabelo
+        item_2:
+          type: string
+          example: Saber fazer laminagem
+        item_3:
+          type: string
+          example: Saber pintar o cabelo
+      example:
+        item_3: Saber pintar o cabelo
+        item_2: Saber fazer laminagem
+        item_1: Saber cortar o cabelo
+      xml:
+        name: jobsRequeriments
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+      xml:
+        name: tag
+    Pet:
+      required:
+      - name
+      - photoUrls
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: doggie
+        category:
+          $ref: '#/components/schemas/Category'
+        photoUrls:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            type: string
+            xml:
+              name: photoUrl
+        tags:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/Tag'
+        status:
+          type: string
+          description: pet status in the store
+          enum:
+          - available
+          - pending
+          - sold
+      xml:
+        name: pet
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      xml:
+        name: '##default'
+  requestBodies:
+    Pet:
+      description: Pet object that needs to be added to the store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Pet'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/Pet'
+    UserArray:
+      description: List of user object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
